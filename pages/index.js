@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Nextjs | Next-Auth</title>
+        <title>Punt Club</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
@@ -21,11 +21,9 @@ export default function Home() {
           {loading && <div className={styles.title}>Loading...</div>}
           {session && (
             <>
-              {" "}
               <p style={{ marginBottom: "10px" }}>
-                {" "}
                 Welcome, {session.user.name ?? session.user.email}
-              </p>{" "}
+              </p>
               <br />
               <img src={session.user.image} alt="" className={styles.avatar} />
             </>
@@ -38,12 +36,6 @@ export default function Home() {
                 alt=""
                 className={styles.avatar}
               />
-              <p className={styles.credit}>
-                GIF by{" "}
-                <a href="https://dribbble.com/shots/6915953-Another-man-down/attachments/6915953-Another-man-down?mode=media">
-                  Another man
-                </a>{" "}
-              </p>
             </>
           )}
         </div>
