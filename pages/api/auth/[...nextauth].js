@@ -3,12 +3,12 @@ import Providers from "next-auth/providers";
 
 const options = {
   providers: [
-    Providers.Credentials({
+    /*Providers.Credentials({
       id: "domain-login",
       name: "Domain Account",
       async authorize(credentials) {
         const user = {
-          /* add function to get user */
+          //add function to get user
         };
         return user;
       },
@@ -16,7 +16,7 @@ const options = {
         username: { label: "Username", type: "text ", placeholder: "jsmith" },
         password: { label: "Password", type: "password" },
       },
-    }),
+    }),*/
     Providers.GitHub({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
