@@ -1,5 +1,8 @@
 import NextAuth from "next-auth";
 import Providers from "next-auth/providers";
+import prepare from "sql-template-strings";
+
+import query from "../../../lib/db";
 
 const options = {
   providers: [
@@ -17,28 +20,9 @@ const options = {
             password: { label: "Password", type: "password" },
           },
         }),*/
-    Providers.GitHub({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
     Providers.Google({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
-
-      //fires when the next-auth client signin method is called
-      async profile(profile, tokens) {
-        console.log(profile);
-        // You can use the tokens, in case you want to fetch more profile information
-        // For example several OAuth provider does not return e-mail by default.
-        // Depending on your provider, will have tokens like `access_token`, `id_token` and or `refresh_token`
-        return {
-          id: profile.id,
-          name: profile.name,
-          hello: "test",
-          email: profile.email,
-          image: profile.picture,
-        };
-      },
     }),
     Providers.Facebook({
       clientId: process.env.FACEBOOK_ID,
@@ -51,6 +35,45 @@ const options = {
 
     //idle session lifetime in seconds
     maxAge: 180 * 24 * 60 * 60, // 180 days
+  },
+  callbacks: {
+    /**
+     * @param  {object} user     User object
+     * @param  {object} account  Provider account
+     * @param  {object} profile  Provider profile
+     * @return {boolean|string}  Return `true` to allow sign in
+     *                           Return `false` to deny access
+     *                           Return `string` to redirect to (eg.: "/unauthorized")
+     */
+    async session(session, token) {
+      // Add property to session, like an access_token from a provider.
+
+      //setup query values
+      let qv = session;
+
+      let userLookup = await query(
+        prepare`SELECT * FROM users WHERE Nickname = 'Momas' LIMIT 1`
+      );
+
+      if (!Object.keys(userLookup.data).length) {
+        if (process.env.DEBUG >= 1) {
+          console.log("[DEBUG] Sign In: User couldn't be found");
+        }
+
+        return Promise.reject(
+          new Error(
+            "We couldn't find your account, please check your email address and password and try again"
+          )
+        );
+      }
+
+      //de-nest the user data
+      userLookup = userLookup.data[0];
+
+      session.user.nickname = userLookup.Nickname;
+      session.accessToken = token.accessToken;
+      return session;
+    },
   },
 };
 

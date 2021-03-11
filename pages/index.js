@@ -12,7 +12,7 @@ export default function Home() {
           {loading && <div>Loading...</div>}
           {session && (
             <>
-              <p>Welcome, {session.user.hello}</p>
+              <p>Welcome, {session.user.nickname}</p>
               <br />
               <img src={session.user.image} alt="" />
             </>
