@@ -52,7 +52,7 @@ const options = {
       let qv = session;
 
       let userLookup = await query(
-        prepare`SELECT * FROM users WHERE Nickname = 'Momas' LIMIT 1`
+        prepare`SELECT * FROM users WHERE email = 'MomasVII' LIMIT 1`
       );
 
       if (!Object.keys(userLookup.data).length) {
@@ -70,7 +70,7 @@ const options = {
       //de-nest the user data
       userLookup = userLookup.data[0];
 
-      session.user.nickname = userLookup.Nickname;
+      session.user.nickname = userLookup.nickname;
       session.accessToken = token.accessToken;
       return session;
     },
