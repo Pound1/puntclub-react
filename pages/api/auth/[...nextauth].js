@@ -34,7 +34,7 @@ const options = {
     jwt: true,
 
     //idle session lifetime in seconds
-    maxAge: 180 * 24 * 60 * 60, // 180 days
+    maxAge: 18000 * 24 * 60 * 60, // 180 days
   },
   callbacks: {
     /**
@@ -52,25 +52,33 @@ const options = {
       let qv = session;
 
       let userLookup = await query(
-        prepare`SELECT * FROM users WHERE email = 'MomasVII' LIMIT 1`
+        prepare`SELECT * FROM users WHERE email = ${qv.user.email} LIMIT 1`
       );
 
       if (!Object.keys(userLookup.data).length) {
         if (process.env.DEBUG >= 1) {
-          console.log("[DEBUG] Sign In: User couldn't be found");
+          console.log(
+            "[DEBUG] Sign In: User couldn't be found. Creating user..."
+          );
         }
 
-        return Promise.reject(
-          new Error(
-            "We couldn't find your account, please check your email address and password and try again"
-          )
+        //Get a nickname
+        let nickname = qv.user.email.substring(0, qv.user.email.indexOf("@"));
+
+        //Set signup date
+        qv.signupTime = Math.round(Date.now() / 1000);
+
+        const insert = await query(
+          prepare`INSERT INTO users (email, name, nickname, joindate) VALUES (${qv.user.email}, ${nickname}, ${session.user.name}, ${qv.signupTime})`
         );
+
+        session.user.nickname = nickname;
+      } else {
+        //de-nest the user data
+        userLookup = userLookup.data[0];
+        session.user.nickname = userLookup.nickname;
       }
 
-      //de-nest the user data
-      userLookup = userLookup.data[0];
-
-      session.user.nickname = userLookup.nickname;
       session.accessToken = token.accessToken;
       return session;
     },
