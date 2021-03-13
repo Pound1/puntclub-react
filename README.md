@@ -2,13 +2,22 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, install Node.js version 12.21.0 found here: https://nodejs.org/en/blog/release/v12.21.0/
 
 ```bash
-npm run dev
+# Verify correct node version
+npm -v
+# then install
+npm install 
+```
+Secondly, run the development server:
+
+```bash
+npm run dev 
 # or
 yarn dev
 ```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
