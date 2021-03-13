@@ -25,4 +25,21 @@ export const GlobalStyles = createGlobalStyle`
             padding:3px 0;
         }
     }
+    .Layout {
+        background-color:#131313;
+        .headlineContainer {
+            display:flex;
+            align-items:center;
+            margin:20px 0;
+            h2 {
+                font-family:"Montserrat-Black";
+                margin:0;
+                color:white;
+            }
+            img {
+                margin-right:-13px;
+                height:55px;
+            }
+        }
+    }
 `;
